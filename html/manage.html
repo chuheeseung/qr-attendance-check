@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <!-- webpage title -->
+    <title>관리자 조회</title>
+    <!-- meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.3/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+    <script src="manage.js" defer></script>
+    <link rel="stylesheet" href="./style.css">
+    
+   <script>
+	var excelHandler = {
+	    getExcelFileName : function() {
+		return 'kcQrcodeCheck.xlsx';
+	    },
+	    getSheetName : function() {
+		return 'Table Test Sheet';
+	    },
+	    getExcelData : function() {
+		return document.getElementById('tableID');
+	    },
+	    getWorksheet : function() {
+		return XLSX.utils.table_to_sheet(this.getExcelData());
+	    }
+	}
+   </script> 
+
+</head>
+
+<body>
+    <div id="manageTitle">
+        <p font-weight:"bold">관리자 페이지</p>
+    </div>
+    <div id="open-close-div-on"  text-align="center" margin="auto">
+	<button class="attendance-status" data-current="on">출석 ON</button>
+    </div>
+    <div id="open-close-div" text-align="center" margin="auto">
+	<button onclick="openClose()" class="btn btn-secondary" id="open-close-button">등록버튼 열기</button>
+    </div>
+    <div id="create-button" style="display:none">
+        <form id="createDataForm" action="/create" method="POST" onsubmit="return checkNull();">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" >또래(02)</span>
+            </div>
+            <input type="text" class="form-control" name="createBirthYear" id="createBirthYear">
+        </div>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">이름(이영지)</span>
+            </div>
+            <input type="text" class="form-control" name="createName" id="createName">
+        </div>
+        <div class="insertButton">
+            <input type="submit" class="btn btn-primary" value="등록" id="createSumbitBtn"></button>
+        </div>
+    </form>
+    </div>
+    <div id="export-excel" text-align="center" margin="auto">
+	<button type="button" onclick="exportExcel()" class="btn btn-secondary" id="excel-button"><span>엑셀 다운로드</span></button>
+    </div>
+    <div>
+	<button type="button" onclick="openDateInsertForm()" class="btn btn-secondary" id="create-date-button">날짜 추가 열기</button>
+    </div>
+    <div id="create-date-div" style="display:none">
+        <form action="/createDate" method="POST" onsubmit="createNewDate()">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">날짜 (yyyymmdd)</span>
+                </div>
+                <input type="text" class="form-control" name="createNewDate" id="create-date-input">
+            </div>
+            <div id="create-submit-button">
+                <input type="submit" class="btn btn-primary" value="추가" id="SubmitNewDateBtn">
+            </div>
+        </form>
+    </div>
+    <!-- 0605 update -->
+    <div>
+        <button type="button" onclick="openDateDeleteForm()" class="btn btn-secondary" id="delete-date-button">날짜 삭제 열기</button>
+    </div>
+    <div id="delete-date-div" style="display:none">
+        <form action="/delete__date" method="POST"  onsubmit="return confirm('정말로 삭제하겠습니까?')">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">삭제할 날짜 (yyyymmdd)</span>
+                    <input type="text" class="form-control" name="deleteNewDate" id="create-date-input">
+                </div>
+                <div id="delete-submit-button">
+                    <input type="submit" class="btn btn-primary" value="삭제" id="SubmitDeleteDateBtn">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div>
+        <button type="button" onclick="getTotal()" class="btn btn-secondary" id="get-total-button">인원 확인</button>
+    </div>
+<!--표 전체 보여주기-->
+<div id="tableAll" class="table-responsive">
+    <table id="tableID" class="table table-sm table-hover table-stripedr table-bordered ">
+        <thead class="table-primary">
+        <tr class="headTr">
+	<span>
+	    
+            <th class="info-class th-pin table-primary" scope="col">Info</th>
+            
+        </span>
+	</tr>
+        </thead>
+        <tbody class="table tableBody">
+        </tbody>
+    </table>
+</div>
+</div>
+
+<script>
+    function deleteDateFunction() {
+	if(confirm('정말로 삭제하겠습니까?') === true) {
+	    alert('삭제되었습니다!');
+	    window.location.reload();
+	}
+</script>
+</body>
+</html>

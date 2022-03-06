@@ -1,0 +1,66 @@
+#manageTitle {
+    color: #555555;
+    font-size: 50px;
+    padding: 5px;
+    text-align: center;
+}
+
+#createDataForm {
+    width: 300px;
+    margin: 10px auto;
+    text-align: center;
+}
+
+#tableAll {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    overflow-x: auto;
+    height: 660px;
+    //0328 update : fixed column
+    overflow-y: scroll;
+}
+
+.inputSize {
+    width: 90px;
+    background-color: #FFFFFF;
+}
+
+.input-group-text {
+    width: 150px;
+}
+
+.th-pin {
+    position: sticky;
+    top: 0;   
+    z-index: 2;
+}
+
+//0328 update : fixed column
+.td-pin {
+    position: sticky;
+    left: 0;
+    //z-index: 1;
+}
+#open-close-div-on{
+display:none;
+}
+
+#get-total-button,
+#delete-date-button,
+#open-close-button,
+#excel-button,
+#create-date-button {
+   margin : 5px;
+   width : 127px;
+   text-align : center;
+}
+
+
+#create-date-div {
+    width: 300px;
+    margin: 10px auto;
+    text-align: center; 
+}
+
+

@@ -1,0 +1,345 @@
+const tableBody = document.querySelector(".tableBody");
+const weekNum =52; //주차 수를 여기에 입력하면 그 수만큼 표 출력
+const trWeek = document.querySelector(".headTr");
+
+//0403 update : create button open, close function
+function openClose () {
+    if($('#create-button').css('display') == 'block') {
+        $('#create-button').hide();
+	$('#open-close-button').text('등록버튼 열기');
+    }    
+    else {
+	$('#create-button').show();
+	$('#open-close-button').text('등록버튼 닫기');
+    }
+}
+
+//0324 update : change weekNum to date
+function getYearDate() {
+    let dateList = ['01/03', '01/10', '01/17', '01/24', '01/31',
+                    '02/07', '02/14', '02/21', '02/28', 
+                    '03/07', '03/14', '03/21', '03/28',
+                    '04/04', '04/11', '04/18', '04/25', 
+                    '05/02', '05/09', '05/16', '05/23', '05/30',
+                    '06/06', '06/13', '06/20', '06/27',
+                    '07/04', '07/11', '07/18', '07/25',
+                    '08/01', '08/08', '08/15', '08/22', '08/29',
+                    '09/05', '09/12', '09/19', '09/26', 
+                    '10/03', '10/10', '10/17', '10/24', '10/31',
+                    '11/07', '11/14', '11/21', '11/28', 
+                    '12/05', '12/12', '12/19', '12/26'];
+
+    for(let i = 1; i <= weekNum; i++) {
+	let th = document.createElement('th');
+	let week = `<th scope="col">${dateList[i - 1]}</th>`;
+	th.setAttribute('id', `${i}`);
+	th.setAttribute('class', 'th-pin table-primary');
+	th.innerHTML = week;
+	trWeek.append(th);
+    }
+}
+
+//0320 update : highlight
+function weekCount(today) {
+    let year = today.getFullYear();
+    let countDay = new Date(year, 0, 1);
+    let week = 1;
+
+    while(today > countDay) {
+        countDay.setDate(countDay.getDate() + 1);
+        let countNum = countDay.getDay();
+        if(countNum == 0) {
+            week++;
+        }
+    }
+    return week;
+}
+
+//0307 update 
+function checkNull() {
+    if(createName.value == "" || createBirthYear.value == "") {
+        alert("다시 입력하세요");
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+function loadFriends() {
+    return fetch("http://193.123.254.109:3000/information").then(response => response.json());
+}
+
+//0320 update
+const today = new Date();
+const thisWeek = weekCount(today) - 1;
+
+loadFriends().then(items => {   
+    getYearDate();
+
+     //for (let i = 1; i <= weekNum; i++) {
+        //let th = document.createElement('th');
+        //let week = `<th id="week_${i}" scope="col">${i}주</th>`;
+        //th.innerHTML = week;
+	
+	//0321 highlight
+	//if(i == thisWeek){
+	  //  th.setAttribute('class', 'table-danger');
+	//}	
+	
+        //trWeek.append(th);
+    //}
+
+    items.forEach((item, index) => {
+	let info = document.querySelector(".info-class");
+	info.setAttribute('position', 'absolute');
+	info.style.zIndex = '99';
+
+        let span = document.createElement("span");
+	//표 한줄 만들기
+        const tr = document.createElement("tr");
+        tr.setAttribute('class', 'tableContainer');
+        let td = document.createElement('td');
+        //수정 버튼 부분
+        td.innerHTML = `<input type="button" id="updateBtn_${index}" name="updateBtn" value="수정" class="btn btn-sm btn-primary" data-name=${item.USER_NM} data-birth=${item.USER_AGE}></input>`
+        td.style.backgroundColor = '#ffffff';
+	span.append(td);
+	//td.style.position = 'sticky';
+	//td.style.left = '0';
+	
+	td = document.createElement('td');
+        //삭제 버튼 부분
+        td.innerHTML = `<input type="button" id="deleteBtn" name="deleteBtn" value="삭제" class="btn btn-sm btn-danger" data-name=${item.USER_NM} data-birth=${item.USER_AGE}></input>`
+        td.style.backgroundColor = '#ffffff';
+	span.append(td);
+	//td.style.position = 'sticky';
+	//td.style.left = '0';	
+
+	td = document.createElement('td');
+        //또래 부분
+        td.innerHTML = `<input type="text" class="inputSize" value=${item.USER_AGE} disabled="">`
+        td.style.backgroundColor = '#ffffff';
+	span.append(td);
+	//td.style.position = 'sticky';
+	//td.style.left = '0';
+        
+	td = document.createElement('td');
+        //이름 부분
+        td.innerHTML = `<input type="text" class="inputSize" value=${item.USER_NM} disabled="">`
+	td.style.backgroundColor = '#ffffff';        
+	span.append(td);
+	
+	span.style.position = 'sticky';
+	span.style.left = '0';
+	span.style.zIndex = '1';
+	//span.style.backgroundColor = 'red';
+	span.style.opcity = '1';
+	tr.append(span);
+	tableBody.append(tr);
+	
+	//let inputSize = document.querySelector(".inputSize");
+	//inputSize.style.backgroundColor = "#FFFFFF";	
+	
+	//td.style.position = 'sticky';
+	//td.style.left = '0';
+
+       /* for (let i = 1; i < weekNum; i++) { //주차 개수만큼 for문
+	td.setAttribute('class', 'td-pin');
+            const td = document.createElement('td');
+	    let week = 'WEEK'+i;
+	    console.log(item.WEEK1);
+	    if(item.week)
+		td.innerHTML = item.week;
+	    else
+            	td.innerHTML = '-';
+            tr.append(td);
+        }*/
+	for (let i = 1; i <= weekNum; i++) { //주차 개수만큼 for문
+            const td = document.createElement('td');
+            let week = 'item.WEEK'+i;
+            //console.log(eval(week));     
+            if(eval(week)) {
+               td.innerHTML = eval(week);
+	    }
+	    else {
+             td.innerHTML = '-';
+	    }
+	    td.id = `${item.USER_AGE}_${item.USER_NM}_${i}}`;
+
+//	    const td = document.createElement('td');
+//	    let week = 'item.WEEK' + i;
+//	    let checkList = ['-', 'X', 'O'];
+//	    let select = document.createElement('select');
+//	    
+//	    //let option = document.createElement('option');
+//	    if(eval(week)) {
+//		for(let j = 0; j < checkList.length; j++) {
+//		    let option = document.createElement('option');
+//		    option.innerHTML = checkList[j];
+//		    //option.setAttribute('value', `${checkList[j]}`);
+//		    option.value = checkList[j];
+//		    //option.setAttirbute('id', `${item.USER_NM}_${item.USER_AGE}_${i}_${checkList[j]}`);
+//		    option.id = `${item.USER_NM}_${item.USER_AGE}_${i}_${checkList[j]}`;
+//		    //select.append(option);
+//		    if(eval(week) == checkList[j]) {
+//			//let target = document.querySelector(`${item.USER_NM}_${item.USER_AGE}_${i}_${checkList[j]}`);
+//			option.selected = i;
+//		    }
+//		    select.append(option);
+//	        } 	
+//	    
+//	    td.append(select);
+//	    }
+//	    else {
+//		td.innerHTML = '-';
+//			    }
+
+	    
+	    //0320 highlight	    
+	    if(i == thisWeek) {
+		//td
+		td.setAttribute('class', 'table-danger');
+		//th
+		let th = document.getElementById(i);
+		th.setAttribute('class', 'th-pin table-danger');
+	    }
+            tr.append(td);
+        }
+	
+    tableBody.append(tr); //html의 tableBody 부분에 tr을 추가
+    })
+
+    return items
+}).then((items) => {
+    const tableBody = document.querySelector(".tableBody");
+
+    // let originalBirthYear = null;
+    // let originalName = null;
+    let click = null;
+    
+    tableBody.addEventListener('click',(event) => { //이벤트 생겼을 때 함수 실행
+        const child = event.target.parentNode.parentNode.children;                                                                                                                                                                                  
+        // console.log(oneClick);
+
+        if(event.target.getAttribute('value') === "수정") { //수정 버튼 클릭
+            //수정 버튼을 눌렀을 때 입력창이 활성화 되면 True 출력
+            //수정 버튼을 다시 눌렀을 때 입력창이 잠기면 False 출력
+            event.target.classList.toggle('active'); 
+            console.log(event.target); 
+            //수정 전 이름 - originalName
+            //버튼 태그에 있던 data-name을 받아 옴
+            let originalName = event.target.getAttribute('data-name');
+            //수정 전 또래 - originalBirthYear
+            //버튼 태그에 있던 data-birth를 받아 옴
+            let originalBirthYear = event.target.getAttribute('data-birth');
+           
+	    //0410 update
+	    let week = document.getElementById(`${originalName}_${originalBirthYear}_${thisWeek}`).value;
+	    console.log("week: ", week);
+ 
+            //originalName, originalBirthYear을 콘솔창에 출력
+            console.log("btn_org", originalName, originalBirthYear);
+            
+            //입력창이 활성화 되었다고 출력
+            console.log("active", event.target.matches('.active'));
+            
+            //처음 클릭했을 때 (click 값에 아무것도 안들어 있음)
+            if(click == null) {
+                //click에 id 값을 넣어줌
+                click = event.target.getAttribute('id');
+                // console.log("click1", click)
+           }
+            
+            if(click == event.target.getAttribute('id')) {
+                // console.log("click2", click)
+                
+                //수정 다 하고 완료했다고 버튼을 한번 더 누를 때 if문 실행
+                if(!event.target.matches('.active')) {
+                    // click = event.target.getAttribute('id');
+                    // console.log("click1", click);
+
+                    //또래, 이름 입력창 잠금
+                    child[2].children[0].disabled = true; //birthYear
+                    child[3].children[0].disabled = true; //name
+
+                    //수정된 이름 - newName
+                    let newName = child[3].children[0].value;
+                    //수정된 또래 - newBirthYear
+                    let newBirthYear = child[2].children[0].value;
+                    //수정된 또래, 이름 콘솔창에 출력
+                    console.log("new", newName, newBirthYear);
+
+                    //수정된 또래, 이름 콘솔창에 출력
+                    console.log("new", newName, newBirthYear);
+
+                    if(confirm(`${newBirthYear} ${newName} (으)로 정말로 수정하겠습니까?`) === true) {
+                        //server.js에 json 만들어서 전송
+                        fetch(`http://193.123.254.109:3000/update`, {
+                            method : 'POST',
+                            headers : {
+                                Accept : 'application/json',
+                                'Content-Type' : 'application/json'
+                            },
+                            body : JSON.stringify({ //server.js에 전달할 json 형태
+                                originalName : originalName,
+                                originalBirthYear : originalBirthYear,
+                                newName : newName,
+                                newBirthYear : newBirthYear
+                            })
+                        })
+                    }
+                
+                    //수정이 완료됐을 때 click 다시 null값으로 초기화
+                    click = null;
+
+                    location.reload();
+                }
+
+                else { //수정 버튼을 한번 클릭했을 때 입력창에 수정할 수 있도록 입력창 활성화
+                    // originalName = child[3].value;
+                    // originalBirthYear = child[2].value;
+                    // console.log("org", originalName, originalBirthYear);
+
+                    // click = event.target.getAttribute('id');
+                    // console.log("click2", click);
+
+                    child[2].children[0].disabled = false; //birthYear
+                    child[3].children[0].disabled = false; //name
+                }
+            }
+            
+            
+            
+        }
+        else if(event.target.getAttribute('value') === "삭제") { //삭제 버튼 클릭
+
+            //삭제할 데이터 이름 - deleteName
+            let deleteName =  event.target.getAttribute('data-name');
+            //삭제할 데이터 또래 - deleteBirthYear
+            let deleteBirthYear =  event.target.getAttribute('data-birth');
+            //삭제할 데이터의 또래, 이름을 콘솔창에 출력
+        
+            if(confirm(`${deleteName} 님을 정말로 삭제하겠습니까?`) == true) {
+                //삭제할 데이터를 json 형태로 만들어서 server.js에 전송
+                fetch(`http://193.123.254.109:3000/delete`, {
+                    method : 'POST',
+                    headers : {
+                        Accept : 'application/json',
+                        'Content-Type' : 'application/json'
+                    },
+                    body : JSON.stringify({ //server.js에 전달할 json 형태
+                        deleteBirthYear : deleteBirthYear,
+                        deleteName : deleteName
+                    })
+                })
+
+                location.reload();
+            }
+            else {
+                // alert("취소되었습니다.");
+                return;
+            }
+
+        }
+    })
+});

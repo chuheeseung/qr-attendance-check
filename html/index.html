@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맑은샘 광천교회 청년부</title>
+    <link rel="icon" type="image/png" href="imgs/favicon.png">
+    <script src="https://kit.fontawesome.com/315d637db3.js" crossorigin="anonymous"></script>
+    <style>
+        html{
+            height: 100%;
+        }
+        body{
+            text-align: center;
+            background-color: #f3e0a0;
+            height: 100%;
+            margin:0;
+        }
+        header{
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 10%;
+            margin: 5px 20px;
+        }
+        .header__icon{
+            font-size: 40px;
+        }
+        .passwordContainer{
+            display: none;
+            width: 30%;
+            height: 20%;
+            margin:auto;
+        }
+	.passwordContainer-button{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+        .password{
+           width: 100%;
+           height: 90%;
+            border-radius: 10px;
+            background-color: #73b676;
+            border:3px solid black;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .password-title{
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .password-input{
+            width: 80%;
+            height: 20%;
+            font-size: 1em;
+            list-style: none;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        .password-submit{
+            width: 20%;
+            height: 100%;
+            margin-top: 10px;
+            border-radius: 10px;
+	    margin-left:5px;
+        }
+        .result{
+            font-size: 100px;
+        }
+        .form{
+            height: 90%;
+            margin:auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;;
+            width: 50%;
+        }
+        .form__item{
+            margin-top: 30px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid black;
+            list-style: none;
+            background-color: rgb(252, 248, 235);
+        }
+        #submit{
+            background-color: #73b676;
+        }
+	 @media screen and (max-width:450px){
+        .passwordContainer{
+            display: none;
+            width: 70%;
+            height: 30%;
+            margin:auto;
+        }
+        .passwordContainer-button{
+            width: 100%;
+        }
+        .password-submit{
+            width: 30%;
+            height: 80%;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+        }
+        @media screen and (max-width:300px){
+        .passwordContainer{
+            display: none;
+            width: 90%;
+            height: 20%;
+            margin:auto;
+        }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+	<i class="fas fa-cookie-bite header__icon"></i>
+        <h1>WELCOME</h1>
+        <i class="fas fa-user header__icon"></i>
+    </header>
+    <div class="passwordContainer">
+<form class="password" action="/password" method="POST">
+            <label for="password" class="password-title">비밀번호를 입력하세요!</label>
+            <input type="password" class="password-input" name="password">
+            <div class="passwordContainer-button">
+                <input type="button" value="취소" class="password-submit" onclick="onCancle();">
+                <input type="submit" value="확인"class="password-submit">
+            </div>
+        </form>       
+    </div> 
+     <form action="/check_attendance" method="POST" class="form container">
+        <select name="birthYear" class="birthYear form__item">
+            <option value="year">본인의 또래를 선택해주세요.</option>
+          </select>
+          <input type="text" name="name" placeholder="이름을 입력해주세요." class="form__item">
+          <input type="hidden" name="id" value="" class="form__item-id">
+	<input type="submit" class="form__item" id="submit" value="확인">
+    </form>    
+
+    <script>
+        const birthYear = document.querySelector('.birthYear');
+        let minYear = 65;
+        let maxYear = 3;
+        while(1){
+            let year = document.createElement('option');
+            if(Math.floor(maxYear / 10) === 0 ){
+                year.setAttribute('value','0' + maxYear);
+                year.innerHTML = '0' + maxYear;
+            }else{
+                year.setAttribute('value', maxYear);
+                year.innerHTML = maxYear;
+            }
+            maxYear--;
+
+            if(maxYear === -1){
+                maxYear = 99;
+            }
+            birthYear.appendChild(year);
+
+            if(maxYear === minYear)
+                break;
+        }
+        const passwordContainer = document.querySelector('.passwordContainer'); 
+        const userInfoBox = document.querySelector('.container');
+	document.querySelector('.fa-user').addEventListener('click',()=>{
+        passwordContainer.style.display = 'block';
+        userInfoBox.style.display = 'none';
+        
+    })
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const id = urlParams.get('id');
+    document.querySelector('.form__item-id').value = id;
+  function onCancle(){
+        passwordContainer.style.display = 'none';
+        userInfoBox.style.display = 'flex';
+    }
+    </script>
+</body>
+</html>
